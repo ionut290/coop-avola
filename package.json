@@ -1,0 +1,67 @@
+{
+  "name": "avola-desktop",
+  "version": "1.2.5",
+  "description": "Applicazione desktop protetta per il portale Coop Avola",
+  "main": "src/main.js",
+  "author": "Coop Avola",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "check": "node --check src/main.js && node --check src/preload.js && node --check src/renderer.js",
+    "test": "npm run check && node tools/verify-safety.js",
+    "dist:win": "electron-builder --win dir --x64",
+    "setup:win": "npm run test && electron-builder --win nsis --x64"
+  },
+  "dependencies": {
+    "electron-updater": "^6.6.2"
+  },
+  "devDependencies": {
+    "electron": "^38.2.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "it.coopavola.desktop",
+    "productName": "Coop Avola Desktop",
+    "asar": true,
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "ionut290",
+        "repo": "coop-avola",
+        "releaseType": "release"
+      }
+    ],
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "Coop-Avola-Desktop-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Coop Avola Desktop",
+      "deleteAppDataOnUninstall": false
+    }
+  },
+  "dependencies": {
+    "electron-updater": "^6.6.2"
+  }
+}

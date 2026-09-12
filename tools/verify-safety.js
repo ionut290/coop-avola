@@ -1,0 +1,42 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const root = path.resolve(__dirname, '..');
+const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
+const pkg = JSON.parse(read('package.json'));
+const lock = JSON.parse(read('package-lock.json'));
+const renderer = read('src/renderer.js');
+const main = read('src/main.js');
+const html = read('src/index.html');
+
+assert.equal(pkg.version, '1.2.5', 'La versione del pacchetto deve essere 1.2.5.');
+assert.equal(lock.version, pkg.version, 'package-lock.json non coincide con package.json.');
+assert.equal(lock.packages[''].version, pkg.version, 'La versione principale del lock file non coincide.');
+assert(!renderer.includes('reconnectReloadPending'), 'È ricomparsa la vecchia ricarica automatica al ritorno della rete.');
+assert(renderer.includes('captureProtectedDraft'), 'Protezione automatica delle bozze mancante.');
+assert(renderer.includes('confirmRiskyReload'), 'Conferma prima della ricarica mancante.');
+assert(renderer.includes("setInterval(captureProtectedDraft, 5000)"), 'Intervallo di protezione bozza mancante.');
+assert(main.includes('protectDrafts: true'), 'Protezione bozze non attiva per impostazione predefinita.');
+assert(main.includes('fullscreen: false'), 'Schermo intero deve essere disattivato per impostazione predefinita.');
+assert(main.includes('hideLeftMenu: false'), 'Menu sinistro deve essere visibile per impostazione predefinita.');
+assert(main.includes('hideRightPanel: false'), 'Pannello destro deve essere visibile per impostazione predefinita.');
+assert(html.includes('La lavagna resta aperta'), 'Messaggio offline sicuro mancante.');
+assert(html.includes('setting-protect-drafts'), 'Impostazione protezione bozze mancante.');
+assert(!main.includes('safeStorage'), 'La memorizzazione protetta delle credenziali deve essere rimossa.');
+assert(!main.includes('get-auto-login-credentials'), 'Il servizio di login automatico deve essere rimosso.');
+assert(!renderer.includes('tryAutoLogin'), 'Il login automatico deve essere rimosso dal renderer.');
+assert(!html.includes('setting-auto-login'), 'Il controllo del login automatico deve essere rimosso.');
+assert(html.includes('partition="coop-avola-manual-login"'), 'La sessione manuale temporanea non è configurata.');
+assert(!main.includes('desktopAppPresence'), 'La funzione Firebase inesistente deve essere rimossa.');
+assert(main.includes('coop-avola-desktop-presence-v1'), 'La presenza sulla rete locale non è configurata.');
+assert(main.includes('run-speed-test'), 'Il nuovo test velocità non è collegato.');
+assert(!renderer.includes('window.ndt7'), 'Il vecchio client NDT7 difettoso deve essere rimosso.');
+assert(renderer.includes('coop_avola_speed_failure_at'), 'La pausa dopo gli errori del test velocità è mancante.');
+assert(main.includes("require('electron-updater')"), 'Il modulo di aggiornamento automatico è mancante.');
+assert(main.includes("repo: 'coop-avola'"), 'Il repository pubblico degli aggiornamenti non è configurato.');
+assert(main.includes('autoInstallOnAppQuit = true'), 'Installazione automatica alla chiusura mancante.');
+assert(renderer.includes('captureProtectedDraft();\n  const started = await window.avolaDesktop.installUpdate()'), 'La bozza deve essere protetta prima del riavvio di aggiornamento.');
+assert(html.includes('Riavvia e aggiorna'), 'Il comando di installazione aggiornamento è mancante.');
+
+console.log('Verifica sicurezza Coop Avola Desktop 1.2.5 superata.');

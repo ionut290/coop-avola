@@ -1,0 +1,18 @@
+COOP AVOLA DESKTOP - INSTALLAZIONE
+
+NOTA: questa cartella serve soltanto a una futura distribuzione portabile che
+contenga anche la sottocartella "app" con Coop Avola Desktop.exe.
+Nel pacchetto dei sorgenti usare invece Crea-Installer-Windows.cmd, presente
+nella cartella principale: crea l'installer ufficiale NSIS nella cartella dist.
+
+1. Estrai completamente questo file ZIP in una cartella.
+2. Fai doppio clic su Installa-Coop-Avola.cmd.
+3. L'app si apre e viene creato un collegamento sul Desktop e nel menu Start.
+
+Non spostare o cancellare file durante l'installazione.
+
+Per rimuovere l'app usa Disinstalla-Coop-Avola.cmd.
+
+Se Windows mostra una richiesta di sicurezza, verifica che il nome del file sia
+Installa-Coop-Avola.cmd e scegli di eseguirlo. L'installazione avviene soltanto
+nel profilo dell'utente corrente e non richiede diritti di amministratore.

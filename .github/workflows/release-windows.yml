@@ -1,0 +1,45 @@
+name: Compila e pubblica Coop Avola Desktop
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Scarica i sorgenti
+        uses: actions/checkout@v4
+
+      - name: Configura Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Installa le dipendenze
+        run: npm ci
+
+      - name: Controlla e compila Setup Windows
+        run: npm run setup:win
+
+      - name: Leggi versione
+        id: version
+        shell: bash
+        run: echo "value=$(node -p \"require('./package.json').version\")" >> "$GITHUB_OUTPUT"
+
+      - name: Pubblica o aggiorna la release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: v${{ steps.version.outputs.value }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/Coop-Avola-Desktop-Setup-*.exe dist/Coop-Avola-Desktop-Setup-*.exe.blockmap dist/latest.yml --clobber
+          else
+            gh release create "$TAG" dist/Coop-Avola-Desktop-Setup-*.exe dist/Coop-Avola-Desktop-Setup-*.exe.blockmap dist/latest.yml --target "$GITHUB_SHA" --title "Coop Avola Desktop $TAG" --notes "Aggiornamento automatico Coop Avola Desktop."
+          fi

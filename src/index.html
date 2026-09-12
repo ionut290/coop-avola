@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' data:; connect-src 'self';" />
+    <title>Coop Avola Desktop</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="toolbar">
+      <div class="brand">
+        <span class="brand-mark">A</span>
+        <div>
+          <strong>Coop Avola</strong>
+          <small>Portale operativo</small>
+        </div>
+      </div>
+
+      <div class="health" aria-live="polite">
+        <button id="internet-status" class="status pending" title="Stato connessione Internet">
+          <span class="dot"></span><span>Internet: verifica…</span>
+        </button>
+        <button id="server-status" class="status pending" title="Stato server Coop Avola">
+          <span class="dot"></span><span>Server: verifica…</span>
+        </button>
+        <button id="speed-status" class="metric" title="Ultimo test reale di download e upload">
+          <span class="metric-label">Velocità</span><strong id="speed-value">↓— ↑—</strong>
+        </button>
+        <button id="users-status" class="metric" title="PC con Coop Avola Desktop attualmente aperta">
+          <span class="metric-label">App in rete</span><strong id="users-value">—</strong>
+        </button>
+        <button id="save-status" class="metric" title="Tempo trascorso dall'ultimo salvataggio rilevato">
+          <span class="metric-label">Salvato</span><strong id="save-value">—</strong>
+        </button>
+      </div>
+
+      <nav class="actions" aria-label="Controlli portale">
+        <button id="back" title="Indietro">←</button>
+        <button id="forward" title="Avanti">→</button>
+        <button id="home" title="Torna alla pagina iniziale">Home</button>
+        <button id="reload" class="primary" title="Ricarica il portale">Ricarica</button>
+        <button id="tools" title="Apri strumenti e registro errori">Diagnosi</button>
+      </nav>
+    </header>
+
+    <main>
+      <section id="offline-banner" class="banner hidden" role="alert">
+        Connessione assente. La lavagna resta aperta: non verrà ricaricata automaticamente e il lavoro presente sullo schermo viene preservato.
+      </section>
+      <section id="update-banner" class="banner update-banner hidden" aria-live="polite">
+        <span id="update-status-text">Aggiornamento in preparazione…</span>
+        <button id="install-update" class="primary hidden">Riavvia e aggiorna</button>
+      </section>
+      <section id="loading" class="loading hidden"><span></span> Caricamento portale…</section>
+      <webview id="portal" partition="coop-avola-manual-login" allowpopups></webview>
+    </main>
+
+    <aside id="diagnostics" class="drawer" aria-hidden="true">
+      <div class="drawer-head">
+        <div>
+          <h2>Diagnosi e recupero</h2>
+          <p id="last-check">Nessuna verifica eseguita</p>
+        </div>
+        <button id="close-tools" aria-label="Chiudi">×</button>
+      </div>
+
+      <div class="summary-grid">
+        <article><span>Internet / DNS</span><strong id="dns-detail">In verifica</strong></article>
+        <article><span>Server portale</span><strong id="server-detail">In verifica</strong></article>
+        <article><span>Test reale connessione</span><strong id="speed-detail">Test non ancora eseguito</strong></article>
+        <article><span>App desktop sulla rete locale</span><strong id="users-detail">Rilevamento in corso</strong></article>
+        <article><span>Ultimo salvataggio</span><strong id="save-detail">Non ancora rilevato</strong></article>
+        <article><span>Protezione lavoro</span><strong id="draft-detail">Inizializzazione</strong></article>
+        <article><span>Pagina</span><strong id="page-detail">Avvio</strong></article>
+        <article><span>Versione app</span><strong id="version-detail">—</strong></article>
+      </div>
+
+      <div class="recovery-actions">
+        <button id="test-speed" class="primary">Test velocità reale</button>
+        <button id="diagnose-now" class="primary">Esegui diagnosi</button>
+        <button id="hard-reload">Svuota pagina e ricarica</button>
+        <button id="restart">Riavvia portale</button>
+        <button id="check-update">Verifica aggiornamenti</button>
+        <button id="devtools">Strumenti tecnici</button>
+      </div>
+
+      <section class="settings-panel">
+        <div class="settings-head">
+          <div>
+            <h3>Impostazioni Lavagna</h3>
+            <p>Visualizzazione e protezione del lavoro</p>
+          </div>
+        </div>
+        <p class="settings-message">L’accesso è sempre manuale: ogni utente inserisce le proprie credenziali direttamente nel portale.</p>
+        <label class="check"><input id="setting-open-board" type="checkbox" checked /> <span>Apri automaticamente la Lavagna</span></label>
+        <label class="check"><input id="setting-fullscreen" type="checkbox" /> <span>Schermo intero</span></label>
+        <label class="check"><input id="setting-hide-left" type="checkbox" /> <span>Nascondi menu laterale sinistro</span></label>
+        <label class="check"><input id="setting-hide-right" type="checkbox" /> <span>Nascondi pannello laterale destro</span></label>
+        <label class="check"><input id="setting-protect-drafts" type="checkbox" checked /> <span>Proteggi localmente le modifiche non ancora salvate</span></label>
+        <div class="settings-actions">
+          <button id="save-settings" class="primary">Salva impostazioni</button>
+        </div>
+        <p id="settings-message" class="settings-message" aria-live="polite"></p>
+      </section>
+
+      <div class="log-head">
+        <h3>Registro errori</h3>
+        <button id="copy-log">Copia</button>
+        <button id="clear-log">Svuota</button>
+      </div>
+      <div id="error-log" class="log" aria-live="polite">
+        <p class="empty">Nessun errore registrato.</p>
+      </div>
+    </aside>
+    <div id="scrim" class="scrim hidden"></div>
+    <script src="renderer.js"></script>
+  </body>
+</html>
