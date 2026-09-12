@@ -3,6 +3,9 @@ name: Compila e pubblica Coop Avola Desktop
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - "mobile/**"
+      - ".github/workflows/release-android.yml"
   workflow_dispatch:
 
 permissions:

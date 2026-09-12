@@ -1,0 +1,17 @@
+{
+	"appId": "it.coopavola.mobile",
+	"appName": "Coop Avola Mobile",
+	"webDir": "www",
+	"server": {
+		"url": "https://coopavola.eggsnext.cloud/main/functions/home",
+		"cleartext": false,
+		"allowNavigation": [
+			"coopavola.eggsnext.cloud"
+		]
+	},
+	"android": {
+		"allowMixedContent": false,
+		"captureInput": true,
+		"webContentsDebuggingEnabled": false
+	}
+}

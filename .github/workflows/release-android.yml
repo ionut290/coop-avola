@@ -1,0 +1,65 @@
+name: Compila e pubblica Coop Avola Mobile
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "mobile/**"
+      - ".github/workflows/release-android.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scarica i sorgenti
+        uses: actions/checkout@v4
+
+      - name: Configura Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Configura Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Installa dipendenze e sincronizza Android
+        working-directory: mobile
+        run: |
+          npm ci
+          npx cap sync android
+
+      - name: Compila APK
+        working-directory: mobile/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Prepara APK
+        id: version
+        working-directory: mobile
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "value=$VERSION" >> "$GITHUB_OUTPUT"
+          cp android/app/build/outputs/apk/debug/app-debug.apk "Coop-Avola-Mobile-$VERSION.apk"
+
+      - name: Pubblica o aggiorna release mobile
+        working-directory: mobile
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: mobile-v${{ steps.version.outputs.value }}
+          VERSION: ${{ steps.version.outputs.value }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "Coop-Avola-Mobile-$VERSION.apk" --clobber
+          else
+            gh release create "$TAG" "Coop-Avola-Mobile-$VERSION.apk" --target "$GITHUB_SHA" --title "Coop Avola Mobile $VERSION" --notes "Prima versione Android adattata della Lavagna Pianificazione."
+          fi

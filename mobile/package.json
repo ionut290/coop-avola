@@ -1,0 +1,19 @@
+{
+  "name": "coop-avola-mobile",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Versione mobile della Lavagna Pianificazione Coop Avola",
+  "scripts": {
+    "test": "node --check www/mobile-adapter.js && node tools/verify-mobile.js",
+    "sync": "npx cap sync android",
+    "open:android": "npx cap open android",
+    "build:android": "npm run sync && cd android && ./gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.3",
+    "@capacitor/core": "^7.4.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.4.3"
+  }
+}
