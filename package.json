@@ -11,7 +11,7 @@
     "check": "node --check src/main.js && node --check src/preload.js && node --check src/renderer.js",
     "test": "npm run check && node tools/verify-safety.js",
     "dist:win": "electron-builder --win dir --x64",
-    "setup:win": "npm run test && electron-builder --win nsis --x64"
+    "setup:win": "npm run test && electron-builder --win nsis --x64 --publish never"
   },
   "dependencies": {
     "electron-updater": "^6.6.2"
