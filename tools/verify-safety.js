@@ -36,7 +36,8 @@ assert(renderer.includes('coop_avola_speed_failure_at'), 'La pausa dopo gli erro
 assert(main.includes("require('electron-updater')"), 'Il modulo di aggiornamento automatico è mancante.');
 assert(main.includes("repo: 'coop-avola'"), 'Il repository pubblico degli aggiornamenti non è configurato.');
 assert(main.includes('autoInstallOnAppQuit = true'), 'Installazione automatica alla chiusura mancante.');
-assert(renderer.includes('captureProtectedDraft();\n  const started = await window.avolaDesktop.installUpdate()'), 'La bozza deve essere protetta prima del riavvio di aggiornamento.');
+assert(renderer.includes('await captureProtectedDraft();'), 'La protezione della bozza prima del riavvio è mancante.');
+assert(renderer.includes('await window.avolaDesktop.installUpdate()'), 'Il riavvio di aggiornamento non è collegato.');
 assert(html.includes('Riavvia e aggiorna'), 'Il comando di installazione aggiornamento è mancante.');
 
 console.log('Verifica sicurezza Coop Avola Desktop 1.2.5 superata.');
