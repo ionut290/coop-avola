@@ -46,5 +46,6 @@ jobs:
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" dist/Coop-Avola-Desktop-Setup-*.exe dist/Coop-Avola-Desktop-Setup-*.exe.blockmap dist/latest.yml --clobber
           else
-            gh release create "$TAG" dist/Coop-Avola-Desktop-Setup-*.exe dist/Coop-Avola-Desktop-Setup-*.exe.blockmap dist/latest.yml --target "$GITHUB_SHA" --title "Coop Avola Desktop $TAG" --notes "Aggiornamento automatico Coop Avola Desktop."
+            gh release create "$TAG" dist/Coop-Avola-Desktop-Setup-*.exe dist/Coop-Avola-Desktop-Setup-*.exe.blockmap dist/latest.yml --target "$GITHUB_SHA" --title "Coop Avola Desktop $TAG" --notes "Aggiornamento automatico Coop Avola Desktop." --latest
           fi
+          gh release edit "$TAG" --latest

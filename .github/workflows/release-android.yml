@@ -61,5 +61,5 @@ jobs:
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release upload "$TAG" "Coop-Avola-Mobile-$VERSION.apk" --clobber
           else
-            gh release create "$TAG" "Coop-Avola-Mobile-$VERSION.apk" --target "$GITHUB_SHA" --title "Coop Avola Mobile $VERSION" --notes "Prima versione Android adattata della Lavagna Pianificazione."
+            gh release create "$TAG" "Coop-Avola-Mobile-$VERSION.apk" --target "$GITHUB_SHA" --title "Coop Avola Mobile $VERSION" --notes "Prima versione Android adattata della Lavagna Pianificazione." --latest=false
           fi
